@@ -17,7 +17,7 @@ def setup_dspy():
         raise ValueError("GEMINI_API_KEY not found in environment variables")
     
     # Configure DSPy to use Gemini
-    gemini_lm = Gemini(model="gemini-2.0-flash-exp", api_key=api_key)
+    gemini_lm = Gemini(model="gemini-2.5-flash-lite", api_key=api_key)
     dspy.settings.configure(lm=gemini_lm)
     
     return gemini_lm

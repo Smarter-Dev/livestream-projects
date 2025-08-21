@@ -4,11 +4,11 @@
 
 ## Overview
 
-This project was created for a live coding session where we build AI bots and agents using Google's Gemini 2.0 Flash (experimental) and DSPy.
+This project was created for a live coding session where we build AI bots and agents using Google's Gemini 2.5 Flash-Lite and DSPy.
 
 ### What We Cover
 
-- **Getting started with the Gemini API** - Learn how to integrate Google's latest Gemini 2.0 Flash model into your applications
+- **Getting started with the Gemini API** - Learn how to integrate Google's latest Gemini 2.5 Flash-Lite model into your applications
 - **Introduction to DSPy** - Understand why DSPy is useful for building with LLMs and how it simplifies prompt engineering
 - **Building a practical AI agent from scratch** - Create a working agent that can perform real tasks
 - **Handling common issues and debugging** - Real-world problem solving as we code live
@@ -53,10 +53,11 @@ This is a hands-on session where everything is coded live, including any bugs or
 2. Create a new API key
 3. Add it to your `.env` file as `GEMINI_API_KEY`
 
-## About Gemini 2.0 Flash
+## About Gemini 2.5 Flash-Lite
 
-We're using Google's latest Gemini 2.0 Flash (experimental) model, which offers:
-- ⚡ **High performance** - Fast inference with excellent quality
-- 💰 **Cost-effective** - Very affordable compared to other models
-- 🔥 **Latest features** - Access to Google's newest AI capabilities
-- 🛠️ **Great for development** - Perfect for building and testing AI agents
+We're using Google's newest Gemini 2.5 Flash-Lite model, which offers:
+- ⚡ **Ultra-fast performance** - The fastest model in the Gemini 2.5 family with excellent quality
+- 💰 **Most cost-effective** - Just $0.10 input/$0.40 output per 1M tokens
+- 🧠 **Smart reasoning** - Adjustable "thinking" budgets for balancing performance and cost
+- 🌐 **Full capabilities** - 1M token context, multimodal input, tool integration
+- 🚀 **Production ready** - Stable, generally available model perfect for real applications
