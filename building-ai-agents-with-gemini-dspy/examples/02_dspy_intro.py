@@ -6,7 +6,6 @@ This example shows how DSPy can help structure and optimize your prompts.
 import os
 from dotenv import load_dotenv
 import dspy
-from dspy import Gemini
 
 def setup_dspy():
     """Initialize DSPy with Gemini as the language model."""
@@ -16,8 +15,8 @@ def setup_dspy():
     if not api_key:
         raise ValueError("GEMINI_API_KEY not found in environment variables")
     
-    # Configure DSPy to use Gemini
-    gemini_lm = Gemini(model="gemini-2.5-flash-lite", api_key=api_key)
+    # Configure DSPy to use Gemini via LiteLLM
+    gemini_lm = dspy.LM(model="gemini/gemini-2.5-flash-lite", api_key=api_key)
     dspy.settings.configure(lm=gemini_lm)
     
     return gemini_lm
