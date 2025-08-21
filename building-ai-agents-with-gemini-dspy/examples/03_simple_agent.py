@@ -48,20 +48,48 @@ class ReminderCreator(dspy.Signature):
 class SimpleAgent:
     """A simple AI agent that can handle multiple types of tasks."""
     
-    def __init__(self):
+    def __init__(self, verbose=False):
         setup_dspy()
+        self.verbose = verbose
         self.task_analyzer = dspy.Predict(TaskAnalyzer)
         self.calculator = dspy.Predict(Calculator)
         self.qa = dspy.Predict(QuestionAnswerer)
         self.reminder_creator = dspy.Predict(ReminderCreator)
         self.reminders = []  # Simple in-memory storage
     
+    def _show_prompt_and_response(self, stage, inputs, result):
+        """Display the prompt and response for educational purposes."""
+        if not self.verbose:
+            return
+            
+        print(f"\n🔧 [{stage}] DSPy Prompt:")
+        print("─" * 40)
+        
+        # Show the input fields
+        for key, value in inputs.items():
+            print(f"Input - {key}: {value}")
+        
+        print("\n🤖 Model Response:")
+        print("─" * 40)
+        
+        # Show the output fields
+        if hasattr(result, '__dict__'):
+            for key, value in result.__dict__.items():
+                if not key.startswith('_'):
+                    print(f"Output - {key}: {value}")
+        
+        print("─" * 40)
+
     def process_request(self, user_request):
         """Main method to process user requests."""
         print(f"\n📨 Processing: '{user_request}'")
         
         # First, analyze what type of task this is
         analysis = self.task_analyzer(user_request=user_request)
+        
+        if self.verbose:
+            self._show_prompt_and_response("Task Analysis", {"user_request": user_request}, analysis)
+        
         print(f"🔍 Task Type: {analysis.task_type}")
         print(f"📋 Extracted Info: {analysis.extracted_info}")
         
@@ -81,18 +109,29 @@ class SimpleAgent:
         """Handle mathematical calculations."""
         print("🧮 Performing calculation...")
         result = self.calculator(expression=expression)
+        
+        if self.verbose:
+            self._show_prompt_and_response("Calculation", {"expression": expression}, result)
+        
         return f"📊 Calculation Result: {result.result}"
     
     def _handle_question(self, question):
         """Handle general knowledge questions."""
         print("❓ Answering question...")
         result = self.qa(question=question)
+        
+        if self.verbose:
+            self._show_prompt_and_response("Question Answering", {"question": question}, result)
+        
         return f"💡 Answer: {result.answer}"
     
     def _handle_reminder(self, request):
         """Handle reminder creation."""
         print("⏰ Creating reminder...")
         result = self.reminder_creator(request=request)
+        
+        if self.verbose:
+            self._show_prompt_and_response("Reminder Creation", {"request": request}, result)
         
         # Store the reminder (in a real app, you'd use a database)
         reminder = {
@@ -112,7 +151,12 @@ class SimpleAgent:
     def _handle_unknown(self, request):
         """Handle unknown request types."""
         print("🤔 Handling unknown request...")
-        fallback = self.qa(question=f"How can I help with this request: {request}")
+        fallback_question = f"How can I help with this request: {request}"
+        fallback = self.qa(question=fallback_question)
+        
+        if self.verbose:
+            self._show_prompt_and_response("Unknown Request Fallback", {"question": fallback_question}, fallback)
+        
         return f"🤷 I'm not sure exactly what you need, but here's my best attempt to help: {fallback.answer}"
     
     def list_reminders(self):
@@ -126,13 +170,13 @@ class SimpleAgent:
         
         return reminder_list
 
-def demo_agent():
+def demo_agent(verbose=False):
     """Demonstrate the agent with various requests."""
-    agent = SimpleAgent()
+    agent = SimpleAgent(verbose=verbose)
     
     test_requests = [
         "What is 15 multiplied by 23?",
-        "Remind me to call mom tomorrow at 2 PM",
+        "Remind me to call mom tomorrow at 2 PM", 
         "What is the capital of Australia?",
         "What's the weather like today?",
         "Remind me to buy groceries this evening",
@@ -141,24 +185,43 @@ def demo_agent():
         "I need to finish my project by Friday"
     ]
     
-    print("🤖 Simple AI Agent Demo")
+    mode_text = "Verbose Demo" if verbose else "Simple Demo"
+    print(f"🤖 Simple AI Agent {mode_text}")
     print("=" * 50)
+    
+    if verbose:
+        print("📚 Educational Mode: Showing prompts and responses")
+        print("=" * 50)
     
     for request in test_requests:
         response = agent.process_request(request)
-        print(f"✨ Response: {response}")
+        print(f"✨ Final Response: {response}")
         print("-" * 50)
+        
+        if verbose:
+            input("⏸️  Press Enter to continue to next example...")
+            print()
     
     # Show all reminders
     print("\n" + agent.list_reminders())
 
-def interactive_mode():
+def interactive_mode(verbose=False):
     """Run the agent in interactive mode."""
-    agent = SimpleAgent()
+    agent = SimpleAgent(verbose=verbose)
     
-    print("🤖 Simple AI Agent - Interactive Mode")
-    print("Type 'quit' to exit, 'reminders' to see all reminders")
+    mode_text = "Interactive Mode (Verbose)" if verbose else "Interactive Mode"
+    print(f"🤖 Simple AI Agent - {mode_text}")
+    
+    commands = "Type 'quit' to exit, 'reminders' to see all reminders"
+    if verbose:
+        commands += ", 'toggle' to switch verbose mode"
+    
+    print(commands)
     print("=" * 50)
+    
+    if verbose:
+        print("📚 Educational Mode: Showing prompts and responses")
+        print("=" * 50)
     
     while True:
         user_input = input("\n🎯 Your request: ").strip()
@@ -168,25 +231,35 @@ def interactive_mode():
             break
         elif user_input.lower() == 'reminders':
             print(agent.list_reminders())
+        elif user_input.lower() == 'toggle' and verbose:
+            agent.verbose = not agent.verbose
+            status = "ON" if agent.verbose else "OFF"
+            print(f"🔧 Verbose mode toggled {status}")
         elif user_input:
             response = agent.process_request(user_input)
-            print(f"✨ Response: {response}")
+            print(f"✨ Final Response: {response}")
 
 def main():
     """Choose between demo mode and interactive mode."""
-    print("Choose mode:")
-    print("1. Demo mode (predefined examples)")
-    print("2. Interactive mode (chat with the agent)")
+    print("🎭 AI Agent Demo Modes:")
+    print("1. Simple demo (clean output for basic understanding)")
+    print("2. Verbose demo (show prompts & responses for learning)")
+    print("3. Interactive mode (chat with the agent)")
+    print("4. Verbose interactive (chat with prompt visibility)")
     
-    choice = input("Enter your choice (1 or 2): ").strip()
+    choice = input("Enter your choice (1-4): ").strip()
     
     if choice == "1":
-        demo_agent()
+        demo_agent(verbose=False)
     elif choice == "2":
-        interactive_mode()
+        demo_agent(verbose=True)
+    elif choice == "3":
+        interactive_mode(verbose=False)
+    elif choice == "4":
+        interactive_mode(verbose=True)
     else:
-        print("Invalid choice. Running demo mode...")
-        demo_agent()
+        print("Invalid choice. Running simple demo...")
+        demo_agent(verbose=False)
 
 if __name__ == "__main__":
     main()

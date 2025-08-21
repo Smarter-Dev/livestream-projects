@@ -14,7 +14,9 @@ def show_menu():
     print("1. Gemini API Basics")
     print("2. Introduction to DSPy")  
     print("3. Simple AI Agent Demo")
-    print("4. Interactive Agent Mode")
+    print("4. Verbose Agent Demo (shows prompts)")
+    print("5. Interactive Agent Mode")
+    print("6. Verbose Interactive Mode")
     print("0. Exit")
     print("-" * 50)
 
@@ -28,12 +30,20 @@ def run_example(choice):
         os.system("uv run python examples/02_dspy_intro.py")
     elif choice == "3":
         print("🚀 Running Simple Agent Demo...")
-        # Run the demo mode specifically
+        # Run the simple demo mode (option 1)
         os.system("echo '1' | uv run python examples/03_simple_agent.py")
     elif choice == "4":
-        print("🚀 Starting Interactive Agent...")
-        # Run the interactive mode specifically
+        print("🚀 Running Verbose Agent Demo...")
+        # Run the verbose demo mode (option 2)
         os.system("echo '2' | uv run python examples/03_simple_agent.py")
+    elif choice == "5":
+        print("🚀 Starting Interactive Agent...")
+        # Run the interactive mode (option 3)
+        os.system("echo '3' | uv run python examples/03_simple_agent.py")
+    elif choice == "6":
+        print("🚀 Starting Verbose Interactive Mode...")
+        # Run the verbose interactive mode (option 4)
+        os.system("echo '4' | uv run python examples/03_simple_agent.py")
     else:
         print("❌ Invalid choice. Please try again.")
 
